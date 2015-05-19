@@ -1,0 +1,19 @@
+version: 0.0.0-ci{build}
+os: Visual Studio 2015 Preview
+configuration:
+- Release
+- Debug
+platform: Any CPU
+build_script:
+- build.cmd RestoreNuget
+- build.cmd Complete %APPVEYOR_BUILD_VERSION%
+test_script:
+- ps: >-
+    $webClient = New-Object 'System.Net.WebClient'
+
+    Get-ChildItem .\output\xunit\ -filter *.xml | ForEach-Object { $webClient.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", $_.FullName) }
+artifacts:
+- path: '\output\nuget\*.nupkg'
+  name: Nuget
+- path: '\output\xunit\*.xml'
+  name: Xunit
