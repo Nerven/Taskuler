@@ -14,6 +14,7 @@ namespace Nerven.Taskuler.Core
     public sealed class TaskulerWorker : ITaskulerWorker, IDisposable
     {
         private readonly TimeSpan _Resolution;
+        private readonly Func<DateTimeOffset> _GetTimestamp;
         private readonly ConcurrentDictionary<Guid, _ScheduleHandle> _Schedules;
         private readonly object _CancellationSourceLock;
         private CancellationTokenSource _CancellationSource;
@@ -21,9 +22,11 @@ namespace Nerven.Taskuler.Core
         private bool _Disposed;
 
         private TaskulerWorker(
-            TimeSpan resolution)
+            TimeSpan resolution,
+            Func<DateTimeOffset> getTimestamp)
         {
             _Resolution = resolution;
+            _GetTimestamp = getTimestamp;
             _Schedules = new ConcurrentDictionary<Guid, _ScheduleHandle>();
             _CancellationSourceLock = new object();
         }
@@ -31,10 +34,12 @@ namespace Nerven.Taskuler.Core
         public static TimeSpan DefaultResolution { get; } = TimeSpan.FromSeconds(1);
 
         public static ITaskulerWorker Create(
-            TimeSpan? resolution = null)
+            TimeSpan? resolution = null,
+            Func<DateTimeOffset> getTimestamp = null)
         {
             return new TaskulerWorker(
-                resolution ?? DefaultResolution);
+                resolution ?? DefaultResolution,
+                getTimestamp ?? (() => DateTimeOffset.Now));
         }
 
         public IEnumerable<ITaskulerScheduleHandle> GetSchedules()
@@ -87,7 +92,7 @@ namespace Nerven.Taskuler.Core
             };
             Action<long> _onNext = _tick =>
             {
-                var _currentTick = DateTimeOffset.Now;
+                var _currentTick = _GetTimestamp();
                 var _schedules = _Schedules.ToArray();
 
                 lock (_tickLock)
