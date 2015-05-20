@@ -54,6 +54,8 @@ namespace Nerven.Taskuler.Core
             return _scheduleHandle;
         }
 
+        public bool IsRunning => _CancellationSource != null;
+
         public void Start()
         {
             CancellationTokenSource _cancellationSource;

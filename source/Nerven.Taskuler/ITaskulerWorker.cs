@@ -11,8 +11,11 @@ namespace Nerven.Taskuler
 
         ITaskulerScheduleHandle Use(ITaskulerSchedule schedule);
 
+        bool IsRunning { get; }
+
         void Start();
 
         Task StopAsync();
     }
 }
+ 
