@@ -101,30 +101,7 @@ namespace Nerven.Taskuler.Core
 
                                 foreach (var _task in _tasks)
                                 {
-                                    var _taskHandle = _task.Value;
-                                    var _taskInstance = _taskHandle.Run(_cancellationSource.Token);
-
-                                    Guid _taskInstanceKey;
-                                    do
-                                    {
-                                        _taskInstanceKey = Guid.NewGuid();
-                                    }
-                                    while (!_taskHandle.Instances.TryAdd(_taskInstanceKey, _taskInstance));
-
-                                    _taskInstance.GetAwaiter().OnCompleted(() =>
-                                    {
-                                        Task _taskInstance2;
-                                        _taskHandle.Instances.TryRemove(_taskInstanceKey, out _taskInstance2);
-
-                                        var _response = _taskInstance.Result;
-                                        if (!_response.ContinueScheduling)
-                                        {
-                                            _TaskHandle _taskHandle2;
-                                            _scheduleHandle.Tasks.TryRemove(_taskHandle.Key, out _taskHandle2);
-                                        }
-
-                                        _taskInstance.Dispose();
-                                    });
+                                    _task.Value.Run(_cancellationSource.Token);
                                 }
                                 break;
                             case TaskulerScheduleAction.NoAction:
@@ -174,8 +151,11 @@ namespace Nerven.Taskuler.Core
 
         private sealed class _ScheduleHandle : ITaskulerScheduleHandle
         {
-            public _ScheduleHandle(TaskulerWorker taskulerWorker, ITaskulerSchedule schedule)
+            private readonly TaskulerWorker _Worker;
+
+            public _ScheduleHandle(TaskulerWorker worker, ITaskulerSchedule schedule)
             {
+                _Worker = worker;
                 Schedule = schedule;
 
                 Key = Guid.NewGuid();
@@ -193,7 +173,7 @@ namespace Nerven.Taskuler.Core
                 _TaskHandle _taskHandle;
                 do
                 {
-                    _taskHandle = new _TaskHandle(this, taskName, run);
+                    _taskHandle = new _TaskHandle(_Worker, this, taskName, run);
                 }
                 while (!Tasks.TryAdd(_taskHandle.Key, _taskHandle));
 
@@ -203,11 +183,14 @@ namespace Nerven.Taskuler.Core
 
         private sealed class _TaskHandle : ITaskulerTaskHandle
         {
+            private readonly TaskulerWorker _Worker;
+            private readonly _ScheduleHandle _ScheduleHandle;
             private readonly Func<CancellationToken, Task<TaskulerTaskResponse>> _Run;
 
-            public _TaskHandle(_ScheduleHandle scheduleHandle, string taskName, Func<CancellationToken, Task<TaskulerTaskResponse>> run)
+            public _TaskHandle(TaskulerWorker worker, _ScheduleHandle scheduleHandle, string taskName, Func<CancellationToken, Task<TaskulerTaskResponse>> run)
             {
-                ScheduleHandle = scheduleHandle;
+                _Worker = worker;
+                _ScheduleHandle = scheduleHandle;
                 TaskName = taskName;
                 _Run = run;
 
@@ -215,7 +198,7 @@ namespace Nerven.Taskuler.Core
                 Instances = new ConcurrentDictionary<Guid, Task>();
             }
 
-            public ITaskulerScheduleHandle ScheduleHandle { get; }
+            public ITaskulerScheduleHandle ScheduleHandle => _ScheduleHandle;
 
             public string TaskName { get; }
 
@@ -223,9 +206,40 @@ namespace Nerven.Taskuler.Core
 
             public ConcurrentDictionary<Guid, Task> Instances { get; }
 
-            public Task<TaskulerTaskResponse> Run(CancellationToken cancellationToken)
+            public void RunManually()
             {
-                return Task.Run(() => _Run(cancellationToken), cancellationToken);
+                var _cancellationSource = _Worker._CancellationSource;
+
+                Must.Assert(_cancellationSource != null);
+
+                Run(_cancellationSource.Token);
+            }
+
+            public void Run(CancellationToken cancellationToken)
+            {
+                var _taskInstance = Task.Run(() => _Run(cancellationToken), cancellationToken);
+
+                Guid _taskInstanceKey;
+                do
+                {
+                    _taskInstanceKey = Guid.NewGuid();
+                }
+                while (!Instances.TryAdd(_taskInstanceKey, _taskInstance));
+
+                _taskInstance.GetAwaiter().OnCompleted(() =>
+                {
+                    Task _taskInstance2;
+                    Instances.TryRemove(_taskInstanceKey, out _taskInstance2);
+
+                    var _response = _taskInstance.Result;
+                    if (!_response.ContinueScheduling)
+                    {
+                        _TaskHandle _taskHandle2;
+                        _ScheduleHandle.Tasks.TryRemove(Key, out _taskHandle2);
+                    }
+
+                    _taskInstance.Dispose();
+                });
             }
         }
     }

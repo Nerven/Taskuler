@@ -11,5 +11,7 @@ namespace Nerven.Taskuler
         Guid Key { get; }
 
         string TaskName { get; }
+
+        void RunManually();
     }
 }

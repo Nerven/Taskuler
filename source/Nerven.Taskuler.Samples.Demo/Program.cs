@@ -32,7 +32,7 @@ namespace Nerven.Taskuler.Samples.Demo
                     _Echo("<");
                 });
 
-            _worker.UseDailySchedule(TimeSpan.FromHours(((int)DateTimeOffset.Now.TimeOfDay.TotalHours) + 1))
+            var _atTask = _worker.UseDailySchedule(TimeSpan.FromHours(((int)DateTimeOffset.Now.TimeOfDay.TotalHours) + 1))
                 .Do(() =>
                 {
                     _Echo("@");
@@ -44,6 +44,7 @@ namespace Nerven.Taskuler.Samples.Demo
             _worker.Start();
             _Stopwatch.Restart();
             _Echo("Started.");
+            _atTask.RunManually();
             Console.ReadLine();
             _Echo("Stopping ...");
             _worker.StopAsync().Wait();
