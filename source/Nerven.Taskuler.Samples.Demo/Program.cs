@@ -15,7 +15,7 @@ namespace Nerven.Taskuler.Samples.Demo
             var _worker = TaskulerWorker.Create(TimeSpan.FromMilliseconds(1));
 
             _worker.UseIntervalSchedule(TimeSpan.FromSeconds(10))
-                .Do(async () =>
+                .Task(async () =>
                 {
                     _Echo("3");
                     await Task.Delay(TimeSpan.FromSeconds(1));
@@ -25,7 +25,7 @@ namespace Nerven.Taskuler.Samples.Demo
                     await Task.Delay(TimeSpan.FromSeconds(1));
                     _Echo("0");
                 })
-                .Do(async () =>
+                .Task(async () =>
                 {
                     _Echo(">");
                     await Task.Delay(TimeSpan.FromSeconds(15));
@@ -33,7 +33,7 @@ namespace Nerven.Taskuler.Samples.Demo
                 });
 
             var _atTask = _worker.UseDailySchedule(TimeSpan.FromHours(((int)DateTimeOffset.Now.TimeOfDay.TotalHours) + 1))
-                .Do(() =>
+                .Task(() =>
                 {
                     _Echo("@");
 

@@ -10,6 +10,6 @@ namespace Nerven.Taskuler
     {
         Guid Key { get; }
 
-        ITaskulerTaskHandle Do(string taskName, Func<CancellationToken, Task<TaskulerTaskResponse>> run);
+        ITaskulerTaskHandle Task(string taskName, Func<CancellationToken, Task<TaskulerTaskResponse>> run);
     }
 }

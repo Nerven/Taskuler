@@ -168,7 +168,7 @@ namespace Nerven.Taskuler.Core
 
             public ConcurrentDictionary<Guid, _TaskHandle> Tasks { get; }
 
-            public ITaskulerTaskHandle Do(string taskName, Func<CancellationToken, Task<TaskulerTaskResponse>> run)
+            public ITaskulerTaskHandle Task(string taskName, Func<CancellationToken, Task<TaskulerTaskResponse>> run)
             {
                 _TaskHandle _taskHandle;
                 do

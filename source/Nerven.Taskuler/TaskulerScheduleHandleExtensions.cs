@@ -8,33 +8,33 @@ namespace Nerven.Taskuler
     [PublicAPI]
     public static class TaskulerScheduleHandleExtensions
     {
-        public static ITaskulerTaskHandle Do(this ITaskulerScheduleHandle scheduleHandle, string taskName, Func<Task<TaskulerTaskResponse>> run)
+        public static ITaskulerTaskHandle Task(this ITaskulerScheduleHandle scheduleHandle, string taskName, Func<Task<TaskulerTaskResponse>> run)
         {
-            return scheduleHandle.Do(taskName, _cancellationToken => run());
+            return scheduleHandle.Task(taskName, _cancellationToken => run());
         }
 
-        public static ITaskulerTaskHandle Do(this ITaskulerScheduleHandle scheduleHandle, string taskName, Func<Task> run)
+        public static ITaskulerTaskHandle Task(this ITaskulerScheduleHandle scheduleHandle, string taskName, Func<Task> run)
         {
-            return scheduleHandle.Do(taskName, async _cancellationToken =>
+            return scheduleHandle.Task(taskName, async _cancellationToken =>
             {
                 await run();
                 return TaskulerTaskResponse.Continue();
             });
         }
 
-        public static ITaskulerTaskHandle Do(this ITaskulerScheduleHandle scheduleHandle, Func<CancellationToken, Task<TaskulerTaskResponse>> run)
+        public static ITaskulerTaskHandle Task(this ITaskulerScheduleHandle scheduleHandle, Func<CancellationToken, Task<TaskulerTaskResponse>> run)
         {
-            return scheduleHandle.Do(null, run);
+            return scheduleHandle.Task(null, run);
         }
 
-        public static ITaskulerTaskHandle Do(this ITaskulerScheduleHandle scheduleHandle, Func<Task<TaskulerTaskResponse>> run)
+        public static ITaskulerTaskHandle Task(this ITaskulerScheduleHandle scheduleHandle, Func<Task<TaskulerTaskResponse>> run)
         {
-            return scheduleHandle.Do(null, _cancellationToken => run());
+            return scheduleHandle.Task(null, _cancellationToken => run());
         }
 
-        public static ITaskulerTaskHandle Do(this ITaskulerScheduleHandle scheduleHandle, Func<Task> run)
+        public static ITaskulerTaskHandle Task(this ITaskulerScheduleHandle scheduleHandle, Func<Task> run)
         {
-            return scheduleHandle.Do(null, async _cancellationToken =>
+            return scheduleHandle.Task(null, async _cancellationToken =>
             {
                 await run();
                 return TaskulerTaskResponse.Continue();
