@@ -40,6 +40,11 @@ namespace Nerven.Taskuler.Samples.Demo
                     return Task.FromResult(0);
                 });
 
+            foreach (var _taskHandle in _worker.GetAllTasks())
+            {
+                Console.WriteLine($"{_taskHandle.Key}\t{_taskHandle.TaskName}");
+            }
+
             _Echo("Starting ...");
             _worker.Start();
             _Stopwatch.Restart();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
@@ -34,6 +35,11 @@ namespace Nerven.Taskuler.Core
         {
             return new TaskulerWorker(
                 resolution ?? DefaultResolution);
+        }
+
+        public IEnumerable<ITaskulerScheduleHandle> GetSchedules()
+        {
+            return _Schedules.ToArray().Select(_schedule => _schedule.Value);
         }
 
         public ITaskulerScheduleHandle Use(ITaskulerSchedule schedule)
@@ -167,6 +173,11 @@ namespace Nerven.Taskuler.Core
             public Guid Key { get; }
 
             public ConcurrentDictionary<Guid, _TaskHandle> Tasks { get; }
+
+            public IEnumerable<ITaskulerTaskHandle> GetTasks()
+            {
+                return Tasks.ToArray().Select(_task => _task.Value);
+            }
 
             public ITaskulerTaskHandle Task(string taskName, Func<CancellationToken, Task<TaskulerTaskResponse>> run)
             {
