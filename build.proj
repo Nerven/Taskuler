@@ -180,6 +180,7 @@
       Condition="!Exists('$(NervenSolutionDir)\output\nuget')"
       Directories="$(NervenSolutionDir)\output\nuget" />
     <Exec
+      Condition="'@(NervenNugetPackEntryFiles->Count())' > '0'"
       Command="&quot;$(NervenNuGetExe)&quot; pack &quot;%(NervenNugetPackEntryFiles.PackFile)&quot; -NonInteractive -IncludeReferencedProjects -NoDefaultExcludes -Symbols -Properties &quot;Configuration=$(NervenConfiguration);Platform=$(NervenPlatformForNuget)&quot; -OutputDirectory &quot;$(NervenSolutionDir)\output\nuget\ &quot; -Version $(NervenSolutionVersion)" />
   </Target>
   <Target Name="Complete"
