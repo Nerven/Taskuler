@@ -94,7 +94,7 @@ namespace Nerven.Taskuler.Samples.Demo
             Console.WriteLine();
 
             _Echo("Starting ...");
-            _worker.Start();
+            _worker.StartAsync().Wait();
             _Stopwatch.Restart();
             _Echo("Started.");
             Thread.Sleep(100);

@@ -63,122 +63,125 @@ namespace Nerven.Taskuler.Core
             return _scheduleHandle;
         }
 
-        public void Start()
+        public Task StartAsync()
         {
-            CancellationTokenSource _cancellationSource;
-            lock (_CancellationSourceLock)
-            {
-                Must
-                    .Assert<InvalidOperationException>(_CancellationSource == null)
-                    .Assert<InvalidOperationException>(!_Disposed);
-
-                _cancellationSource = _CancellationSource = new CancellationTokenSource();
-                _FirstTick = null;
-                _LastTick = null;
-            }
-
-            var _tickLock = new object();
-
-            Func<bool> _onDone = () =>
+            return Task.Run(() =>
                 {
+                    CancellationTokenSource _cancellationSource;
                     lock (_CancellationSourceLock)
                     {
-                        if (ReferenceEquals(_CancellationSource, _cancellationSource))
-                        {
-                            _CancellationSource.Dispose();
-                            _CancellationSource = _cancellationSource = null;
+                        Must
+                            .Assert<InvalidOperationException>(_CancellationSource == null)
+                            .Assert<InvalidOperationException>(!_Disposed);
 
-                            return true;
-                        }
+                        _cancellationSource = _CancellationSource = new CancellationTokenSource();
+                        _FirstTick = null;
+                        _LastTick = null;
                     }
 
-                    return false;
-                };
-            Action<long> _onNext = _tick =>
-                {
-                    var _cancellationSourceCopy = _cancellationSource;
-                    var _firstTick = _FirstTick;
-                    var _setFirstTick = false;
-                    if (!_firstTick.HasValue)
-                    {
-                        _firstTick = DateTimeOffset.MinValue.Add(_GetTimestamp(DateTimeOffset.MinValue));
-                        _setFirstTick = true;
-                    }
+                    var _tickLock = new object();
 
-                    var _currentTick = _GetTimestamp(_firstTick.Value);
-                    var _schedules = _Schedules.ToArray();
-
-                    if (_cancellationSourceCopy.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    lock (_tickLock)
-                    {
-                        if (_setFirstTick)
+                    Func<bool> _onDone = () =>
                         {
-                            Must.Assert(!_FirstTick.HasValue);
+                            lock (_CancellationSourceLock)
+                            {
+                                if (ReferenceEquals(_CancellationSource, _cancellationSource))
+                                {
+                                    _CancellationSource.Dispose();
+                                    _CancellationSource = _cancellationSource = null;
 
-                            _FirstTick = _firstTick;
-                        }
+                                    return true;
+                                }
+                            }
 
-                        var _lastTick = _LastTick;
-
-                        foreach (var _schedule in _schedules)
+                            return false;
+                        };
+                    Action<long> _onNext = _tick =>
                         {
+                            var _cancellationSourceCopy = _cancellationSource;
+                            var _firstTick = _FirstTick;
+                            var _setFirstTick = false;
+                            if (!_firstTick.HasValue)
+                            {
+                                _firstTick = DateTimeOffset.MinValue.Add(_GetTimestamp(DateTimeOffset.MinValue));
+                                _setFirstTick = true;
+                            }
+
+                            var _currentTick = _GetTimestamp(_firstTick.Value);
+                            var _schedules = _Schedules.ToArray();
+
                             if (_cancellationSourceCopy.IsCancellationRequested)
                             {
-                                break;
+                                return;
                             }
 
-                            var _scheduleHandle = _schedule.Value;
-                            var _tickResponse = _scheduleHandle.Schedule.Tick(_Resolution, _firstTick.Value, _lastTick, _currentTick);
-
-                            if (_tickResponse.ScheduledOccurrences.Count != 0)
+                            lock (_tickLock)
                             {
-                                if (_cancellationSourceCopy.IsCancellationRequested)
+                                if (_setFirstTick)
                                 {
-                                    break;
+                                    Must.Assert(!_FirstTick.HasValue);
+
+                                    _FirstTick = _firstTick;
                                 }
 
-                                var _cancellationToken = _cancellationSourceCopy.Token;
-                                var _tasks = _scheduleHandle.Tasks.ToArray();
-                                foreach (var _scheduledOccurrence in _tickResponse.ScheduledOccurrences)
+                                var _lastTick = _LastTick;
+
+                                foreach (var _schedule in _schedules)
                                 {
-                                    foreach (var _task in _tasks)
+                                    if (_cancellationSourceCopy.IsCancellationRequested)
                                     {
-                                        _task.Value.Run(_scheduledOccurrence, _cancellationToken);
+                                        break;
+                                    }
+
+                                    var _scheduleHandle = _schedule.Value;
+                                    var _tickResponse = _scheduleHandle.Schedule.Tick(_Resolution, _firstTick.Value, _lastTick, _currentTick);
+
+                                    if (_tickResponse.ScheduledOccurrences.Count != 0)
+                                    {
+                                        if (_cancellationSourceCopy.IsCancellationRequested)
+                                        {
+                                            break;
+                                        }
+
+                                        var _cancellationToken = _cancellationSourceCopy.Token;
+                                        var _tasks = _scheduleHandle.Tasks.ToArray();
+                                        foreach (var _scheduledOccurrence in _tickResponse.ScheduledOccurrences)
+                                        {
+                                            foreach (var _task in _tasks)
+                                            {
+                                                _task.Value.Run(_scheduledOccurrence, _cancellationToken);
+                                            }
+                                        }
+                                    }
+
+                                    if (_tickResponse.Finished)
+                                    {
+                                        _ScheduleHandle _removedScheduleHandle;
+                                        if (!_Schedules.TryRemove(_schedule.Key, out _removedScheduleHandle) ||
+                                            !ReferenceEquals(_removedScheduleHandle, _schedule.Value))
+                                        {
+                                            Must.Never();
+                                        }
                                     }
                                 }
-                            }
 
-                            if (_tickResponse.Finished)
+                                _LastTick = _currentTick;
+                            }
+                        };
+                    Action _onCompleted = () =>
+                        {
+                            _onDone();
+                        };
+                    Action<Exception> _onError = _error =>
+                        {
+                            if (_onDone())
                             {
-                                _ScheduleHandle _removedScheduleHandle;
-                                if (!_Schedules.TryRemove(_schedule.Key, out _removedScheduleHandle) ||
-                                    !ReferenceEquals(_removedScheduleHandle, _schedule.Value))
-                                {
-                                    Must.Never();
-                                }
                             }
-                        }
+                        };
 
-                        _LastTick = _currentTick;
-                    }
-                };
-            Action _onCompleted = () =>
-                {
-                    _onDone();
-                };
-            Action<Exception> _onError = _error =>
-                {
-                    if (_onDone())
-                    {
-                    }
-                };
-
-            _cancellationSource.Token.Register(() => _onDone());
-            Observable.Interval(_Resolution).Subscribe(_onNext, _onError, _onCompleted, _cancellationSource.Token);
+                    _cancellationSource.Token.Register(() => _onDone());
+                    Observable.Interval(_Resolution).Subscribe(_onNext, _onError, _onCompleted, _cancellationSource.Token);
+                });
         }
 
         public async Task StopAsync()

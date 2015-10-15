@@ -13,7 +13,7 @@ namespace Nerven.Taskuler
 
         ITaskulerScheduleHandle AddSchedule(string scheduleName, ITaskulerSchedule schedule);
 
-        void Start();
+        Task StartAsync();
 
         Task StopAsync();
     }
