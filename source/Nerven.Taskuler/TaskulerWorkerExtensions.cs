@@ -7,6 +7,11 @@ namespace Nerven.Taskuler
     [PublicAPI]
     public static class TaskulerWorkerExtensions
     {
+        public static ITaskulerScheduleHandle AddSchedule(this ITaskulerWorker worker, ITaskulerSchedule schedule)
+        {
+            return worker?.AddSchedule(null, schedule);
+        }
+
         public static IEnumerable<ITaskulerTaskHandle> GetAllTasks(this ITaskulerWorker worker)
         {
             return worker?.GetSchedules().SelectMany(_schedule => _schedule.GetTasks());

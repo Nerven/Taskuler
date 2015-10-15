@@ -11,8 +11,10 @@ namespace Nerven.Taskuler
     {
         Guid Key { get; }
 
+        string ScheduleName { get; }
+
         IEnumerable<ITaskulerTaskHandle> GetTasks();
 
-        ITaskulerTaskHandle Task(string taskName, Func<CancellationToken, Task<TaskulerTaskResponse>> run);
+        ITaskulerTaskHandle AddTask(string taskName, Func<TaskulerTaskContext, CancellationToken, Task<TaskulerTaskResponse>> run);
     }
 }

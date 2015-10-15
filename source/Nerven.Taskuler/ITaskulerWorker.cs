@@ -7,11 +7,11 @@ namespace Nerven.Taskuler
     [PublicAPI]
     public interface ITaskulerWorker
     {
+        bool IsRunning { get; }
+
         IEnumerable<ITaskulerScheduleHandle> GetSchedules();
 
-        ITaskulerScheduleHandle Use(ITaskulerSchedule schedule);
-
-        bool IsRunning { get; }
+        ITaskulerScheduleHandle AddSchedule(string scheduleName, ITaskulerSchedule schedule);
 
         void Start();
 
