@@ -1,2 +1,2 @@
 @echo off
-build.cmd Complete %~1
+build.cmd Complete

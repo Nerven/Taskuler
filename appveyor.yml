@@ -1,12 +1,12 @@
-version: 0.0.0-ci{build}
-os: Visual Studio 2015 RC
+version: 0.0.0-alpha+Build.appveyor{build}
 configuration:
 - Release
 - Debug
 platform: Any CPU
 build_script:
-- build.cmd RestoreNuget
-- build.cmd Complete %APPVEYOR_BUILD_VERSION%
+- pre-build.cmd
+- build.cmd Complete
+- appveyor UpdateBuild -Version "%NERVENFULLVERSION_OUTPUT%+Build.appveyor%APPVEYOR_BUILD_NUMBER%"
 test_script:
 - ps: >-
     $webClient = New-Object 'System.Net.WebClient'

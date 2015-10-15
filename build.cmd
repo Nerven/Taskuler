@@ -16,11 +16,9 @@ echo Using solution file: %NERVENSOLUTIONFILE%
 if not defined NERVENSOLUTIONNAME (for %%F in (*.sln) do set NERVENSOLUTIONNAME=%%~nF)
 echo Using solution name: %NERVENSOLUTIONNAME%
 
-if not defined NERVENSOLUTIONVERSION (set NERVENSOLUTIONVERSION=%~2)
-echo Using version: %NERVENSOLUTIONVERSION%
-
 if not defined NERVENMSBUILDTARGET (set NERVENMSBUILDTARGET=%~1)
 echo Using target: %NERVENMSBUILDTARGET%
 
+if not exist "packages\" ("%NERVENMSBUILDCMD%" "%NERVENBUILDFILE%" /target:RestoreNuget)
 if defined NERVENMSBUILDTARGET (set _targetArgument=/target:"%NERVENMSBUILDTARGET%")
 "%NERVENMSBUILDCMD%" "%NERVENBUILDFILE%" %_targetArgument%
