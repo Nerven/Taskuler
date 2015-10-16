@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <title>$title$</title>
+    <version>$version$</version>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://nerven.se/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$title$</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright © Victor Blomberg &lt;victor.blomberg@nerven.se&gt; and contributors.</copyright>
+    <tags></tags>
+  </metadata>
+  <files>
+    <file src="..\..\LICENSE.txt" target="lib\net452\" />
+  </files>
+</package>
