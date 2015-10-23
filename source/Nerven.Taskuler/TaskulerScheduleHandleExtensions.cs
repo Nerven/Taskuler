@@ -25,38 +25,46 @@ namespace Nerven.Taskuler
 
         public static ITaskulerTaskHandle AddTask(this ITaskulerScheduleHandle scheduleHandle, string taskName, Func<TaskulerTaskContext, CancellationToken, Task> run)
         {
-            return scheduleHandle.AddTask(taskName, async (_context, _cancellationToken) =>
-                {
-                    await run(_context, _cancellationToken);
-                    return TaskulerTaskResponse.Continue();
-                });
+            return scheduleHandle.AddTask(
+                taskName,
+                    async (_context, _cancellationToken) =>
+                    {
+                        await run(_context, _cancellationToken);
+                        return TaskulerTaskResponse.Continue();
+                    });
         }
 
         public static ITaskulerTaskHandle AddTask(this ITaskulerScheduleHandle scheduleHandle, string taskName, Func<TaskulerTaskContext, Task> run)
         {
-            return scheduleHandle.AddTask(taskName, async (_context, _cancellationToken) =>
-                {
-                    await run(_context);
-                    return TaskulerTaskResponse.Continue();
-                });
+            return scheduleHandle.AddTask(
+                taskName,
+                    async (_context, _cancellationToken) =>
+                    {
+                        await run(_context);
+                        return TaskulerTaskResponse.Continue();
+                    });
         }
 
         public static ITaskulerTaskHandle AddTask(this ITaskulerScheduleHandle scheduleHandle, string taskName, Func<CancellationToken, Task> run)
         {
-            return scheduleHandle.AddTask(taskName, async (_context, _cancellationToken) =>
-                {
-                    await run(_cancellationToken);
-                    return TaskulerTaskResponse.Continue();
-                });
+            return scheduleHandle.AddTask(
+                taskName, 
+                async (_context, _cancellationToken) =>
+                    {
+                        await run(_cancellationToken);
+                        return TaskulerTaskResponse.Continue();
+                    });
         }
 
         public static ITaskulerTaskHandle AddTask(this ITaskulerScheduleHandle scheduleHandle, string taskName, Func<Task> run)
         {
-            return scheduleHandle.AddTask(taskName, async (_context, _cancellationToken) =>
-                {
-                    await run();
-                    return TaskulerTaskResponse.Continue();
-                });
+            return scheduleHandle.AddTask(
+                taskName,
+                async (_context, _cancellationToken) =>
+                    {
+                        await run();
+                        return TaskulerTaskResponse.Continue();
+                    });
         }
 
         public static ITaskulerTaskHandle AddTask(this ITaskulerScheduleHandle scheduleHandle, Func<TaskulerTaskContext, CancellationToken, Task<TaskulerTaskResponse>> run)
@@ -81,38 +89,46 @@ namespace Nerven.Taskuler
 
         public static ITaskulerTaskHandle AddTask(this ITaskulerScheduleHandle scheduleHandle, Func<TaskulerTaskContext, CancellationToken, Task> run)
         {
-            return scheduleHandle.AddTask(null, async (_context, _cancellationToken) =>
-                {
-                    await run(_context, _cancellationToken);
-                    return TaskulerTaskResponse.Continue();
-                });
+            return scheduleHandle.AddTask(
+                null,
+                    async (_context, _cancellationToken) =>
+                    {
+                        await run(_context, _cancellationToken);
+                        return TaskulerTaskResponse.Continue();
+                    });
         }
 
         public static ITaskulerTaskHandle AddTask(this ITaskulerScheduleHandle scheduleHandle, Func<TaskulerTaskContext, Task> run)
         {
-            return scheduleHandle.AddTask(null, async (_context, _cancellationToken) =>
-                {
-                    await run(_context);
-                    return TaskulerTaskResponse.Continue();
-                });
+            return scheduleHandle.AddTask(
+                null, 
+                async (_context, _cancellationToken) =>
+                    {
+                        await run(_context);
+                        return TaskulerTaskResponse.Continue();
+                    });
         }
 
         public static ITaskulerTaskHandle AddTask(this ITaskulerScheduleHandle scheduleHandle, Func<CancellationToken, Task> run)
         {
-            return scheduleHandle.AddTask(null, async (_context, _cancellationToken) =>
-                {
-                    await run(_cancellationToken);
-                    return TaskulerTaskResponse.Continue();
-                });
+            return scheduleHandle.AddTask(
+                null, 
+                async (_context, _cancellationToken) =>
+                    {
+                        await run(_cancellationToken);
+                        return TaskulerTaskResponse.Continue();
+                    });
         }
 
         public static ITaskulerTaskHandle AddTask(this ITaskulerScheduleHandle scheduleHandle, Func<Task> run)
         {
-            return scheduleHandle.AddTask(null, async (_context, _cancellationToken) =>
-                {
-                    await run();
-                    return TaskulerTaskResponse.Continue();
-                });
+            return scheduleHandle.AddTask(
+                null,
+                async (_context, _cancellationToken) =>
+                    {
+                        await run();
+                        return TaskulerTaskResponse.Continue();
+                    });
         }
     }
 }

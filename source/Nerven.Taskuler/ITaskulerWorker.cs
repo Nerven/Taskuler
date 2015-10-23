@@ -18,4 +18,3 @@ namespace Nerven.Taskuler
         Task StopAsync();
     }
 }
- 
