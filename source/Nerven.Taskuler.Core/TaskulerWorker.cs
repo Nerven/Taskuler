@@ -181,6 +181,15 @@ namespace Nerven.Taskuler.Core
 
                     _cancellationSource.Token.Register(() => _onDone());
                     Observable.Interval(_Resolution).Subscribe(_onNext, _onError, _onCompleted, _cancellationSource.Token);
+
+                    try
+                    {
+                        _onNext(0);
+                    }
+                    catch (Exception _e)
+                    {
+                        _onError(_e);
+                    }
                 });
         }
 
