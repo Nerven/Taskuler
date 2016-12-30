@@ -29,7 +29,7 @@ namespace Nerven.Taskuler
                 taskName,
                     async (_context, _cancellationToken) =>
                     {
-                        await run(_context, _cancellationToken);
+                        await run(_context, _cancellationToken).ConfigureAwait(false);
                         return TaskulerTaskResponse.Continue();
                     });
         }
@@ -40,7 +40,7 @@ namespace Nerven.Taskuler
                 taskName,
                     async (_context, _cancellationToken) =>
                     {
-                        await run(_context);
+                        await run(_context).ConfigureAwait(false);
                         return TaskulerTaskResponse.Continue();
                     });
         }
@@ -51,7 +51,7 @@ namespace Nerven.Taskuler
                 taskName, 
                 async (_context, _cancellationToken) =>
                     {
-                        await run(_cancellationToken);
+                        await run(_cancellationToken).ConfigureAwait(false);
                         return TaskulerTaskResponse.Continue();
                     });
         }
@@ -62,7 +62,7 @@ namespace Nerven.Taskuler
                 taskName,
                 async (_context, _cancellationToken) =>
                     {
-                        await run();
+                        await run().ConfigureAwait(false);
                         return TaskulerTaskResponse.Continue();
                     });
         }
@@ -93,7 +93,7 @@ namespace Nerven.Taskuler
                 null,
                     async (_context, _cancellationToken) =>
                     {
-                        await run(_context, _cancellationToken);
+                        await run(_context, _cancellationToken).ConfigureAwait(false);
                         return TaskulerTaskResponse.Continue();
                     });
         }
@@ -104,7 +104,7 @@ namespace Nerven.Taskuler
                 null, 
                 async (_context, _cancellationToken) =>
                     {
-                        await run(_context);
+                        await run(_context).ConfigureAwait(false);
                         return TaskulerTaskResponse.Continue();
                     });
         }
@@ -115,7 +115,7 @@ namespace Nerven.Taskuler
                 null, 
                 async (_context, _cancellationToken) =>
                     {
-                        await run(_cancellationToken);
+                        await run(_cancellationToken).ConfigureAwait(false);
                         return TaskulerTaskResponse.Continue();
                     });
         }
@@ -126,7 +126,7 @@ namespace Nerven.Taskuler
                 null,
                 async (_context, _cancellationToken) =>
                     {
-                        await run();
+                        await run().ConfigureAwait(false);
                         return TaskulerTaskResponse.Continue();
                     });
         }

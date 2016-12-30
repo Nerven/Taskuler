@@ -22,17 +22,17 @@ namespace Nerven.Taskuler.Samples.Demo
                 .AddTask(async () =>
                     {
                         _Echo("3");
-                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
                         _Echo("2");
-                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
                         _Echo("1");
-                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
                         _Echo("0:" + _counter);
                     })
                 .AddTask(async () =>
                     {
                         _Echo(">");
-                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
                         _Echo("<");
                     });
 

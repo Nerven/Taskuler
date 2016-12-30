@@ -96,7 +96,7 @@ namespace Nerven.Taskuler.Core
 
                             return false;
                         };
-                    Action<long> _onNext = _tick =>
+                    Action<long> _onNext = _tickNotUsed =>
                         {
                             var _cancellationSourceCopy = _cancellationSource;
                             var _firstTick = _FirstTick;
@@ -200,7 +200,7 @@ namespace Nerven.Taskuler.Core
                 _CancellationSource != null ||
                 _Schedules.ToArray().SelectMany(_schedule => _schedule.Value.Tasks.ToArray()).ToArray().Any(_task => !_task.Value.Instances.IsEmpty))
             {
-                await Task.Delay(2);
+                await Task.Delay(2).ConfigureAwait(false);
             }
         }
 
