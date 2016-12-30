@@ -44,7 +44,9 @@ namespace Nerven.Taskuler.Samples.Demo
                         return Task.FromResult(0);
                     });
 
-            var _atTask = _worker.AddDailySchedule(TimeSpan.FromHours(((int)DateTimeOffset.Now.TimeOfDay.TotalHours) + 1))
+            var _timeOfDay = TimeSpan.FromHours((int)DateTimeOffset.Now.TimeOfDay.TotalHours + 1);
+            _timeOfDay -= TimeSpan.FromDays(Math.Floor(_timeOfDay.TotalDays));
+            var _atTask = _worker.AddDailySchedule(_timeOfDay)
                 .AddTask(() =>
                     {
                         _Echo("@");
