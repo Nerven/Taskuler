@@ -1,5 +1,4 @@
 {
-  "locked": false,
   "version": 1,
   "targets": {
     ".NETStandard,Version=v1.1": {
@@ -2970,5 +2969,8 @@
       "System.Threading.Tasks >= 4.3.0"
     ],
     ".NETStandard,Version=v1.1": []
+  },
+  "packageFolders": {
+    "C:\\Users\\ed\\.nuget\\packages\\": {}
   }
 }

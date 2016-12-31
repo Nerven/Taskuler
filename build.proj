@@ -23,10 +23,10 @@
       Condition="$(NervenSolutionName) == '' OR $(NervenSolutionName) == '*Undefined*'">$(MSBuildProjectName)</NervenSolutionName>
     <NervenSolutionFile
       Condition="$(NervenSolutionFile) == '' OR $(NervenSolutionFile) == '*Undefined*'">$(NervenSolutionDir)\$(NervenSolutionName).sln</NervenSolutionFile>
-    <NervenNuGetExe
+    <!-- To make sure NuGet isn't a pre-3.5 version, we ignore third party environment paths --><!--NervenNuGetExe
       Condition="$(NervenNuGetExe) == '' OR $(NervenNuGetExe) == '*Undefined*'">$(NuGetToolPath)</NervenNuGetExe>
     <NervenNuGetExe
-      Condition="$(NervenNuGetExe) == '' OR $(NervenNuGetExe) == '*Undefined*'">$(NuGet)</NervenNuGetExe>
+      Condition="$(NervenNuGetExe) == '' OR $(NervenNuGetExe) == '*Undefined*'">$(NuGet)</NervenNuGetExe-->
     <NervenNuGetExe
       Condition="$(NervenNuGetExe) == '' OR $(NervenNuGetExe) == '*Undefined*'">$(NervenSolutionDir)\packages\NuGet.exe</NervenNuGetExe>
     <NervenNuGetExeDownloadSource
@@ -36,13 +36,13 @@
     <NervenInstallByggeNugetPackageCommand
       Condition="$(NervenInstallByggeNugetPackageCommand) == '' OR $(NervenInstallByggeNugetPackageCommand) == '*Undefined*'">&quot;$(NervenNuGetExe)&quot; install Nerven.Bygge -pre -outputdirectory &quot;$(NervenSolutionDir)\packages&quot;</NervenInstallByggeNugetPackageCommand>
     <NervenInstallGitVersionTaskNugetPackageCommand
-      Condition="$(NervenInstallGitVersionTaskNugetPackageCommand) == '' OR $(NervenInstallGitVersionTaskNugetPackageCommand) == '*Undefined*'">&quot;$(NervenNuGetExe)&quot; install GitVersionTask -pre -outputdirectory &quot;$(NervenSolutionDir)\packages&quot;</NervenInstallGitVersionTaskNugetPackageCommand>
+      Condition="$(NervenInstallGitVersionTaskNugetPackageCommand) == '' OR $(NervenInstallGitVersionTaskNugetPackageCommand) == '*Undefined*'">&quot;$(NervenNuGetExe)&quot; install GitVersionTask -outputdirectory &quot;$(NervenSolutionDir)\packages&quot;</NervenInstallGitVersionTaskNugetPackageCommand>
     <NervenInstallXunitNugetPackageCommand
       Condition="$(NervenInstallXunitNugetPackageCommand) == '' OR $(NervenInstallXunitNugetPackageCommand) == '*Undefined*'">&quot;$(NervenNuGetExe)&quot; install xunit.runner.msbuild -outputdirectory &quot;$(NervenSolutionDir)\packages&quot;</NervenInstallXunitNugetPackageCommand>
   </PropertyGroup>
   <ItemGroup>
     <NervenGitVersionTaskGitVersionTaskPath
-      Include="$(NervenSolutionDir)\packages\GitVersionTask.*\GitVersionTask.dll" />
+      Include="$(NervenSolutionDir)\packages\GitVersionTask.*\**\GitVersionTask.dll" />
     <NervenXunitMsbuildRunnerTaskPath
       Include="$(NervenSolutionDir)\packages\xunit.runner.msbuild.*\build\*\xunit.runner.msbuild.dll" />
   </ItemGroup>
