@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{B6889F41-CF14-4495-8A80-A31CDD2DF6E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Taskuler", "source\Nerven.Taskuler\Nerven.Taskuler.csproj", "{34134952-395C-447F-B295-D2F4BDE57D8E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Taskuler.Core", "source\Nerven.Taskuler.Core\Nerven.Taskuler.Core.csproj", "{C83DD70A-2D8D-4B41-A2DA-2816FCC25F20}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Taskuler.Samples.Demo", "source\Nerven.Taskuler.Samples.Demo\Nerven.Taskuler.Samples.Demo.csproj", "{CF729C2B-E147-49B7-AF12-1B0CEDEE624D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Taskuler", "source\Nerven.Taskuler\Nerven.Taskuler.csproj", "{4636493A-5CF5-4053-94EA-D9F067B59D3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Taskuler.Core", "source\Nerven.Taskuler.Core\Nerven.Taskuler.Core.csproj", "{B9BDA50F-149C-463E-B5BB-BF856BA02CE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,25 +17,25 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{34134952-395C-447F-B295-D2F4BDE57D8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34134952-395C-447F-B295-D2F4BDE57D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34134952-395C-447F-B295-D2F4BDE57D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34134952-395C-447F-B295-D2F4BDE57D8E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C83DD70A-2D8D-4B41-A2DA-2816FCC25F20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C83DD70A-2D8D-4B41-A2DA-2816FCC25F20}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C83DD70A-2D8D-4B41-A2DA-2816FCC25F20}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C83DD70A-2D8D-4B41-A2DA-2816FCC25F20}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF729C2B-E147-49B7-AF12-1B0CEDEE624D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CF729C2B-E147-49B7-AF12-1B0CEDEE624D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF729C2B-E147-49B7-AF12-1B0CEDEE624D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF729C2B-E147-49B7-AF12-1B0CEDEE624D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4636493A-5CF5-4053-94EA-D9F067B59D3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4636493A-5CF5-4053-94EA-D9F067B59D3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4636493A-5CF5-4053-94EA-D9F067B59D3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4636493A-5CF5-4053-94EA-D9F067B59D3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9BDA50F-149C-463E-B5BB-BF856BA02CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9BDA50F-149C-463E-B5BB-BF856BA02CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9BDA50F-149C-463E-B5BB-BF856BA02CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9BDA50F-149C-463E-B5BB-BF856BA02CE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{34134952-395C-447F-B295-D2F4BDE57D8E} = {B6889F41-CF14-4495-8A80-A31CDD2DF6E2}
-		{C83DD70A-2D8D-4B41-A2DA-2816FCC25F20} = {B6889F41-CF14-4495-8A80-A31CDD2DF6E2}
 		{CF729C2B-E147-49B7-AF12-1B0CEDEE624D} = {B6889F41-CF14-4495-8A80-A31CDD2DF6E2}
+		{4636493A-5CF5-4053-94EA-D9F067B59D3C} = {B6889F41-CF14-4495-8A80-A31CDD2DF6E2}
+		{B9BDA50F-149C-463E-B5BB-BF856BA02CE4} = {B6889F41-CF14-4495-8A80-A31CDD2DF6E2}
 	EndGlobalSection
 EndGlobal

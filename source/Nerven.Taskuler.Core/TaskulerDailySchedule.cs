@@ -16,14 +16,14 @@ namespace Nerven.Taskuler.Core
 
         public static ITaskulerSchedule Create(TimeSpan timeOfDay)
         {
-            Must.Assert<ArgumentOutOfRangeException>(timeOfDay >= TimeSpan.Zero && timeOfDay < TimeSpan.FromDays(1));
+            Must.Assertion.Assert<ArgumentOutOfRangeException>(timeOfDay >= TimeSpan.Zero && timeOfDay < TimeSpan.FromDays(1));
 
             return new TaskulerDailySchedule(timeOfDay);
         }
 
         public override TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset firstTick, TimeSpan? lastTick, TimeSpan currentTick)
         {
-            Must.Assert(resolution <= TimeSpan.FromHours(6));
+            Must.Assertion.Assert(resolution <= TimeSpan.FromHours(6));
 
             return (!lastTick.HasValue || firstTick.Add(lastTick.Value).TimeOfDay < _TimeOfDay) && firstTick.Add(currentTick).TimeOfDay >= _TimeOfDay ?
                 TaskulerScheduleResponse.Perform(new TaskulerTaskContext(firstTick, firstTick.Add(currentTick).Subtract(firstTick.Add(currentTick).TimeOfDay).Add(_TimeOfDay).Subtract(firstTick))) :

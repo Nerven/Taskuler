@@ -18,14 +18,14 @@ namespace Nerven.Taskuler.Core
 
         public static ITaskulerSchedule Create(TimeSpan interval, bool skipTicks = false)
         {
-            Must.Assert<ArgumentOutOfRangeException>(interval > TimeSpan.Zero);
+            Must.Assertion.Assert<ArgumentOutOfRangeException>(interval > TimeSpan.Zero);
 
             return new TaskulerIntervalSchedule(interval, skipTicks);
         }
 
         public override TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset firstTick, TimeSpan? lastTick, TimeSpan currentTick)
         {
-            Must.Assert(resolution <= _Interval);
+            Must.Assertion.Assert(resolution <= _Interval);
 
             if (_SkipTicks)
             {

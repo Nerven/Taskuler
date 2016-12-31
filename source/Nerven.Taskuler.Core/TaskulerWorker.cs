@@ -70,7 +70,7 @@ namespace Nerven.Taskuler.Core
                     CancellationTokenSource _cancellationSource;
                     lock (_CancellationSourceLock)
                     {
-                        Must
+                        Must.Assertion
                             .Assert<InvalidOperationException>(_CancellationSource == null)
                             .Assert<InvalidOperationException>(!_Disposed);
 
@@ -119,7 +119,7 @@ namespace Nerven.Taskuler.Core
                             {
                                 if (_setFirstTick)
                                 {
-                                    Must.Assert(!_FirstTick.HasValue);
+                                    Must.Assertion.Assert(!_FirstTick.HasValue);
 
                                     _FirstTick = _firstTick;
                                 }
@@ -160,7 +160,7 @@ namespace Nerven.Taskuler.Core
                                         if (!_Schedules.TryRemove(_schedule.Key, out _removedScheduleHandle) ||
                                             !ReferenceEquals(_removedScheduleHandle, _schedule.Value))
                                         {
-                                            Must.Never();
+                                            Must.Assertion.AssertNever();
                                         }
                                     }
                                 }
@@ -283,9 +283,10 @@ namespace Nerven.Taskuler.Core
                 var _cancellationSource = _Worker._CancellationSource;
                 var _firstTick = _Worker._FirstTick;
 
-                Must.Assert(_Worker.IsRunning);
-                Must.Assert(_cancellationSource != null);
-                Must.Assert(_firstTick.HasValue);
+                Must.Assertion
+                    .Assert(_Worker.IsRunning)
+                    .Assert(_cancellationSource != null)
+                    .Assert(_firstTick.HasValue);
 
                 Run(new TaskulerTaskContext(_firstTick.Value, _Worker._GetTimestamp(_firstTick.Value)), _cancellationSource.Token);
             }
@@ -317,8 +318,6 @@ namespace Nerven.Taskuler.Core
                             _TaskHandle _taskHandle2;
                             _ScheduleHandle.Tasks.TryRemove(Key, out _taskHandle2);
                         }
-
-                        _taskInstance.Dispose();
                     });
             }
         }

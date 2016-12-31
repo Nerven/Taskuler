@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using JetBrains.Annotations;
 
 namespace Nerven.Taskuler
@@ -7,7 +8,7 @@ namespace Nerven.Taskuler
     [PublicAPI]
     public class TaskulerScheduleResponse
     {
-        private static readonly IReadOnlyCollection<TaskulerTaskContext> _EmptyScheduledOccurrences = new List<TaskulerTaskContext>().AsReadOnly();
+        private static readonly IReadOnlyCollection<TaskulerTaskContext> _EmptyScheduledOccurrences = new ReadOnlyCollection<TaskulerTaskContext>(new List<TaskulerTaskContext>());
 
         private TaskulerScheduleResponse(
             TaskulerTaskContext[] scheduledOccurrences,
@@ -16,7 +17,7 @@ namespace Nerven.Taskuler
         {
             ScheduledOccurrences = scheduledOccurrences == null || scheduledOccurrences.Length == 0 ?
                 _EmptyScheduledOccurrences :
-                new List<TaskulerTaskContext>(scheduledOccurrences).AsReadOnly();
+                new ReadOnlyCollection<TaskulerTaskContext>(new List<TaskulerTaskContext>(scheduledOccurrences));
             Finished = finished;
             Error = error;
         }
