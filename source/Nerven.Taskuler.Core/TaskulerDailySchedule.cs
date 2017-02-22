@@ -21,12 +21,12 @@ namespace Nerven.Taskuler.Core
             return new TaskulerDailySchedule(timeOfDay);
         }
 
-        public override TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset firstTick, TimeSpan? lastTick, TimeSpan currentTick)
+        public override TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset epoch, TimeSpan? prevDuration, TimeSpan nextDuration)
         {
             Must.Assertion.Assert(resolution <= TimeSpan.FromHours(6));
 
-            return (!lastTick.HasValue || firstTick.Add(lastTick.Value).TimeOfDay < _TimeOfDay) && firstTick.Add(currentTick).TimeOfDay >= _TimeOfDay ?
-                TaskulerScheduleResponse.Perform(new TaskulerTaskContext(firstTick, firstTick.Add(currentTick).Subtract(firstTick.Add(currentTick).TimeOfDay).Add(_TimeOfDay).Subtract(firstTick))) :
+            return (!prevDuration.HasValue || epoch.Add(prevDuration.Value).TimeOfDay < _TimeOfDay) && epoch.Add(nextDuration).TimeOfDay >= _TimeOfDay ?
+                TaskulerScheduleResponse.Perform(new TaskulerTaskContext(epoch, epoch.Add(nextDuration).Subtract(epoch.Add(nextDuration).TimeOfDay).Add(_TimeOfDay).Subtract(epoch))) :
                 TaskulerScheduleResponse.Wait();
         }
     }

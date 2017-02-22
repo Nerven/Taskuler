@@ -12,14 +12,8 @@ namespace Nerven.Taskuler.Core
         {
         }
 
-        public static ITaskulerSchedule Create()
-        {
-            return _Instance;
-        }
+        public static ITaskulerSchedule Create() => _Instance;
 
-        public override TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset firstTick, TimeSpan? lastTick, TimeSpan currentTick)
-        {
-            return TaskulerScheduleResponse.Wait();
-        }
+        public override TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset epoch, TimeSpan? prevDuration, TimeSpan nextDuration) => TaskulerScheduleResponse.Wait();
     }
 }

@@ -3,22 +3,21 @@ using JetBrains.Annotations;
 
 namespace Nerven.Taskuler
 {
-    // TODO: Better member names
     [PublicAPI]
     public sealed class TaskulerTaskContext
     {
         public TaskulerTaskContext(
-            DateTimeOffset baseTime,
-            TimeSpan scheduledAfter)
+            DateTimeOffset epoch,
+            TimeSpan duration)
         {
-            BaseTime = baseTime;
-            ScheduledAfter = scheduledAfter;
+            Epoch = epoch;
+            Duration = duration;
         }
 
-        public DateTimeOffset BaseTime { get; }
+        public DateTimeOffset Epoch { get; }
 
-        public TimeSpan ScheduledAfter { get; }
+        public TimeSpan Duration { get; }
 
-        public DateTimeOffset ScheduledAt => BaseTime.Add(ScheduledAfter);
+        public DateTimeOffset Timestamp => Epoch.Add(Duration);
     }
 }

@@ -6,6 +6,6 @@ namespace Nerven.Taskuler
     [PublicAPI]
     public interface ITaskulerSchedule
     {
-        TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset firstTick, TimeSpan? lastTick, TimeSpan currentTick);
+        TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset epoch, TimeSpan? prevDuration, TimeSpan nextDuration);
     }
 }

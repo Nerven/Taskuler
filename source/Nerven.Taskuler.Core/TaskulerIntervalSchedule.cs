@@ -23,23 +23,23 @@ namespace Nerven.Taskuler.Core
             return new TaskulerIntervalSchedule(interval, skipTicks);
         }
 
-        public override TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset firstTick, TimeSpan? lastTick, TimeSpan currentTick)
+        public override TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset epoch, TimeSpan? prevDuration, TimeSpan nextDuration)
         {
             Must.Assertion.Assert(resolution <= _Interval);
 
             if (_SkipTicks)
             {
-                if (!lastTick.HasValue || currentTick.Subtract(lastTick.Value) >= _Interval)
+                if (!prevDuration.HasValue || nextDuration.Subtract(prevDuration.Value) >= _Interval)
                 {
-                    return TaskulerScheduleResponse.Perform(new TaskulerTaskContext(firstTick, currentTick));
+                    return TaskulerScheduleResponse.Perform(new TaskulerTaskContext(epoch, nextDuration));
                 }
 
                 return TaskulerScheduleResponse.Wait();
             }
 
             var _intervalTicks = (double)_Interval.Ticks;
-            var _earlierOccurrences = lastTick.HasValue ? (long)Math.Floor(lastTick.Value.Ticks / _intervalTicks) + 1 : 0;
-            var _expectedOccurrences = (long)Math.Floor(currentTick.Ticks / _intervalTicks) + 1;
+            var _earlierOccurrences = prevDuration.HasValue ? (long)Math.Floor(prevDuration.Value.Ticks / _intervalTicks) + 1 : 0;
+            var _expectedOccurrences = (long)Math.Floor(nextDuration.Ticks / _intervalTicks) + 1;
             
             var _occurrencesSinceLastTick = _expectedOccurrences - _earlierOccurrences;
             if (_occurrencesSinceLastTick <= 0)
@@ -50,7 +50,7 @@ namespace Nerven.Taskuler.Core
             var _taskContexts = new TaskulerTaskContext[_occurrencesSinceLastTick];
             for (var _i = 0; _i < _occurrencesSinceLastTick; _i++)
             {
-                _taskContexts[_i] = new TaskulerTaskContext(firstTick, TimeSpan.FromTicks(_Interval.Ticks * (_earlierOccurrences + _i)));
+                _taskContexts[_i] = new TaskulerTaskContext(epoch, TimeSpan.FromTicks(_Interval.Ticks * (_earlierOccurrences + _i)));
             }
             
             return TaskulerScheduleResponse.Perform(_taskContexts);

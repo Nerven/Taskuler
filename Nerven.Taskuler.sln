@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Taskuler", "source\N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Taskuler.Core", "source\Nerven.Taskuler.Core\Nerven.Taskuler.Core.csproj", "{B9BDA50F-149C-463E-B5BB-BF856BA02CE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerven.Taskuler.Core.SystemWeb", "source\Nerven.Taskuler.Core.SystemWeb\Nerven.Taskuler.Core.SystemWeb.csproj", "{3F9191EC-1A39-4E6F-A148-333323311C7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{B9BDA50F-149C-463E-B5BB-BF856BA02CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9BDA50F-149C-463E-B5BB-BF856BA02CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9BDA50F-149C-463E-B5BB-BF856BA02CE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F9191EC-1A39-4E6F-A148-333323311C7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F9191EC-1A39-4E6F-A148-333323311C7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F9191EC-1A39-4E6F-A148-333323311C7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F9191EC-1A39-4E6F-A148-333323311C7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,5 +43,6 @@ Global
 		{CF729C2B-E147-49B7-AF12-1B0CEDEE624D} = {B6889F41-CF14-4495-8A80-A31CDD2DF6E2}
 		{4636493A-5CF5-4053-94EA-D9F067B59D3C} = {B6889F41-CF14-4495-8A80-A31CDD2DF6E2}
 		{B9BDA50F-149C-463E-B5BB-BF856BA02CE4} = {B6889F41-CF14-4495-8A80-A31CDD2DF6E2}
+		{3F9191EC-1A39-4E6F-A148-333323311C7E} = {B6889F41-CF14-4495-8A80-A31CDD2DF6E2}
 	EndGlobalSection
 EndGlobal

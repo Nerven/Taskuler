@@ -36,9 +36,11 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include="Nerven.Taskuler.Core.nuspec" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObservableExtensions.TaskulerNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskulerDailySchedule.cs" />
     <Compile Include="TaskulerIntervalSchedule.cs" />

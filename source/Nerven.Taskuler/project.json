@@ -3,6 +3,7 @@
   "dependencies": {
     "JetBrains.Annotations": "10.2.1",
     "System.Linq": "4.3.0",
+    "System.Threading": "4.3.0",
     "System.Threading.Tasks": "4.3.0"
   },
   "frameworks": {

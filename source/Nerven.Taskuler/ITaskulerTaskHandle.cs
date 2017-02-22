@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Nerven.Taskuler
@@ -12,6 +13,8 @@ namespace Nerven.Taskuler
 
         string TaskName { get; }
 
-        void RunManually();
+        Task RunManuallyAsync();
+
+        void Remove();
     }
 }

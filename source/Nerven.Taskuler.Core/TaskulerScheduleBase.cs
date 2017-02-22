@@ -6,6 +6,6 @@ namespace Nerven.Taskuler.Core
     [PublicAPI]
     public abstract class TaskulerScheduleBase : ITaskulerSchedule
     {
-        public abstract TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset firstTick, TimeSpan? lastTick, TimeSpan currentTick);
+        public abstract TaskulerScheduleResponse Tick(TimeSpan resolution, DateTimeOffset epoch, TimeSpan? prevDuration, TimeSpan nextDuration);
     }
 }
