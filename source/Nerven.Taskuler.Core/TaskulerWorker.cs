@@ -132,7 +132,6 @@ namespace Nerven.Taskuler.Core
                         //// ReSharper disable AccessToDisposedClosure
                         using (var _cancellationTokenSource = new CancellationTokenSource())
                         using (_cancellationTokenSource.Token.Register(() => _Guarded(() => _StopSignal.Release(), $"Release {nameof(_StopSignal)} on cancellation.")))
-                        using (cancellationToken.Register(() => _RequestCancellation?.Invoke(), false))
                         {
                             //// ReSharper disable once AccessToModifiedClosure
                             _Setup(_completionSource.Task, _cancellationTokenSource);
@@ -176,6 +175,16 @@ namespace Nerven.Taskuler.Core
             return _startedCompletionSource.Task;
         }
 
+        public async Task RunAsync(CancellationToken cancellationToken)
+        {
+            await StartAsync(cancellationToken).ConfigureAwait(false);
+
+            using (cancellationToken.Register(() => Task.Run(StopAsync)))
+            {
+                await WaitAsync().ConfigureAwait(false);
+            }
+        }
+
         public Task StopAsync()
         {
             lock (_StartStopLock)
@@ -189,15 +198,22 @@ namespace Nerven.Taskuler.Core
             }
         }
 
-        public Task WaitAsync()
+        public async Task WaitAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
+            Task _mainTask;
             lock (_StartStopLock)
             {
                 Must.Assertion
                     .Assert<InvalidOperationException>(!_Disposed)
                     .Assert<InvalidOperationException>(_MainTask != null);
 
-                return _MainTask;
+                _mainTask = _MainTask;
+            }
+
+            var _cancellationTaskSource = new TaskCompletionSource<int>();
+            using (cancellationToken.Register(() => _cancellationTaskSource.SetCanceled()))
+            {
+                await Task.WhenAny(_cancellationTaskSource.Task, _mainTask).ConfigureAwait(false);
             }
         }
 

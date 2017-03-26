@@ -17,10 +17,12 @@ namespace Nerven.Taskuler
 
         ITaskulerScheduleHandle AddSchedule(string scheduleName, ITaskulerSchedule schedule);
 
-        Task StartAsync(CancellationToken cancellationToken);
+        Task StartAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        Task RunAsync(CancellationToken cancellationToken);
 
         Task StopAsync();
 
-        Task WaitAsync();
+        Task WaitAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

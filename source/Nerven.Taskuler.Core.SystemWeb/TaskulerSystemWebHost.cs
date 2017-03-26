@@ -49,7 +49,7 @@ namespace Nerven.Taskuler.Core.SystemWeb
 
             public ITaskulerScheduleHandle AddSchedule(string scheduleName, ITaskulerSchedule schedule) => _WrappedWorker.AddSchedule(scheduleName, schedule);
 
-            public Task StartAsync(CancellationToken cancellationToken)
+            public Task StartAsync(CancellationToken cancellationToken = default(CancellationToken))
             {
                 return Task.Run(async () =>
                     {
@@ -79,9 +79,19 @@ namespace Nerven.Taskuler.Core.SystemWeb
                     }, cancellationToken);
             }
 
+            public async Task RunAsync(CancellationToken cancellationToken)
+            {
+                await StartAsync(cancellationToken).ConfigureAwait(false);
+
+                using (cancellationToken.Register(() => Task.Run(StopAsync)))
+                {
+                    await WaitAsync().ConfigureAwait(false);
+                }
+            }
+
             public Task StopAsync() => _WrappedWorker.StopAsync();
 
-            public Task WaitAsync() => _WrappedWorker.WaitAsync();
+            public Task WaitAsync(CancellationToken cancellationToken = default(CancellationToken)) => _WrappedWorker.WaitAsync(cancellationToken);
         }
     }
 }
