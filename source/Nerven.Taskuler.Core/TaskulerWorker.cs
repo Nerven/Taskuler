@@ -396,8 +396,13 @@ namespace Nerven.Taskuler.Core
             _Faulted = true;
 
             var _message = $"{GetType().FullName} failed unexpectedly: {description} resulted in {exception.Message}.";
-            _Notifications.OnNext(new TaskulerNotification(DateTimeOffset.UtcNow, _message, exception));
+            _NotifiyError(_message, exception);
             Environment.FailFast(_message, exception);
+        }
+
+        private void _NotifiyError(string message, Exception exception)
+        {
+            _Notifications.OnNext(new TaskulerNotification(DateTimeOffset.UtcNow, message, exception));
         }
 
         private Action<Exception> _PrepareEscalateError(string description)
@@ -583,9 +588,15 @@ namespace Nerven.Taskuler.Core
                     {
                         if (_task.IsFaulted)
                         {
-                            // TODO: Task issues should be reported but not set worker in faulted state
-                            _Worker._EscalateError("Scheduled task failed", _task.Exception);
+                            var _aggregateException = _task.Exception.Flatten();
+                            var _message = _aggregateException.InnerExceptions.Count == 1
+                                ? $"Scheduled task failed with error: {_aggregateException.InnerException.Message}"
+                                : $"Scheduled task failed with errors: {string.Join(", ", _aggregateException.InnerExceptions.Select(_innerException => _innerException.Message))}";
+                            
+                            _Worker._NotifiyError(_message, _task.Exception);
                         }
+
+                        return Task.FromResult(0);
                     });
             }
 
@@ -682,6 +693,11 @@ namespace Nerven.Taskuler.Core
                         _TaskWorkHandle _taskWorkHandle;
                         _TaskHandle._ScheduleHandle._Tasks.TryRemove(_TaskHandle.Key, out _taskHandle);
                         _TaskHandle._ScheduleHandle._TaskWorkHandles.TryRemove(_TaskHandle.Key, out _taskWorkHandle);
+                    }
+
+                    if (_response?.Error != null)
+                    {
+                        return _FaultedTask<int>(_response.Error);
                     }
 
                     return Task.FromResult(0);
