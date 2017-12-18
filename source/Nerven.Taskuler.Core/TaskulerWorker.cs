@@ -313,6 +313,11 @@ namespace Nerven.Taskuler.Core
                         break;
                     }
 
+                    if (_schedule.Value._Tasks.IsEmpty)
+                    {
+                        continue;
+                    }
+
                     var _scheduleHandle = _schedule.Value;
                     var _tickResponse = _scheduleHandle.Schedule.Tick(_Resolution, _epoch, _prevDuration, _nextDuration);
 
@@ -541,19 +546,22 @@ namespace Nerven.Taskuler.Core
 
             public void Remove()
             {
-                Must.Assertion
-                    .Assert<InvalidOperationException>(!_Removed);
+                if (_Removed)
+                {
+                    return;
+                }
 
                 _Removed = true;
                 _TaskHandle _taskHandle;
-                _ScheduleHandle._Tasks.TryRemove(Key, out _taskHandle);
-
-                lock (_Worker._StartStopLock)
+                if (_ScheduleHandle._Tasks.TryRemove(Key, out _taskHandle))
                 {
-                    if (!_Worker._Faulted && _Worker._Running)
+                    lock (_Worker._StartStopLock)
                     {
-                        _TaskWorkHandle _taskWorkHandler;
-                        _ScheduleHandle._TaskWorkHandles.TryRemove(Key, out _taskWorkHandler);
+                        if (!_Worker._Faulted && _Worker._Running)
+                        {
+                            _TaskWorkHandle _taskWorkHandler;
+                            _ScheduleHandle._TaskWorkHandles.TryRemove(Key, out _taskWorkHandler);
+                        }
                     }
                 }
             }
