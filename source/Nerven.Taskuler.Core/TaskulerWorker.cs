@@ -127,14 +127,27 @@ namespace Nerven.Taskuler.Core
             //// ReSharper disable once RedundantAssignment
             var _mainTask = Task.Run(async () =>
                 {
+                    var _hasMutatedInstanceState = false;
                     try
                     {
                         //// ReSharper disable AccessToDisposedClosure
                         using (var _cancellationTokenSource = new CancellationTokenSource())
                         using (_cancellationTokenSource.Token.Register(() => _Guarded(() => _StopSignal.Release(), $"Release {nameof(_StopSignal)} on cancellation.")))
                         {
-                            //// ReSharper disable once AccessToModifiedClosure
-                            _Setup(_completionSource.Task, _cancellationTokenSource);
+                            var _startedAt = DateTimeOffset.MinValue.Add(_GetTimestamp(DateTimeOffset.MinValue));
+
+                            lock (_StartStopLock)
+                            {
+                                Must.Assertion
+                                    .Assert<ObjectDisposedException>(!_Disposed, "Worker instance is not disposed.")
+                                    .Assert<InvalidOperationException>(!_Faulted, "Worker instance is not in a faulted state.")
+                                    .Assert<InvalidOperationException>(!_Running, "Worker instance is not running.")
+                                    .Assert<InvalidOperationException>(_TaskWorkHandles == null);
+
+                                _hasMutatedInstanceState = true;
+                                _Setup(_startedAt, _completionSource.Task, _cancellationTokenSource);
+                            }
+
                             _Start();
                             _startedCompletionSource.SetResult(0);
                             await _StopSignal.WaitAsync().ConfigureAwait(false);
@@ -147,9 +160,12 @@ namespace Nerven.Taskuler.Core
                     {
                         try
                         {
-                            _Faulted = true;
                             _startedCompletionSource.TrySetException(_error);
-                            _Teardown(true);
+                            if (_hasMutatedInstanceState)
+                            {
+                                _Faulted = true;
+                                _Teardown(true);
+                            }
                         }
                         catch (Exception _errorHandlingError)
                         {
@@ -239,41 +255,29 @@ namespace Nerven.Taskuler.Core
             }
         }
 
-        private void _Setup(Task mainTask, CancellationTokenSource cancellationTokenSource)
+        private void _Setup(DateTimeOffset startedAt, Task mainTask, CancellationTokenSource cancellationTokenSource)
         {
-            var _startedAt = DateTimeOffset.MinValue.Add(_GetTimestamp(DateTimeOffset.MinValue));
+            _MainTask = mainTask;
+            _RequestCancellation = cancellationTokenSource.Cancel;
+            _StopSignal?.Dispose();
+            _StopSignal = new SemaphoreSlim(0, 1);
+            _ActiveTasks?.Dispose();
+            _ActiveTasks = new SemaphoreSlim(_MaxSimultaneousTasks, _MaxSimultaneousTasks);
+            _Running = true;
 
-            lock (_StartStopLock)
+            _CancellationToken = cancellationTokenSource.Token;
+
+            _PrevDuration = null;
+            _Epoch = startedAt;
+
+            _TaskWorkHandles = new ConcurrentBag<_TaskWorkHandle>();
+            foreach (var _scheduleHandle in _Schedules.Values)
             {
-                Must.Assertion
-                    .Assert<InvalidOperationException>(!_Disposed)
-                    .Assert<InvalidOperationException>(!_Faulted)
-                    .Assert<InvalidOperationException>(!_Running)
-                    .Assert<InvalidOperationException>(_TaskWorkHandles == null)
-                    .Assume(() => mainTask != null);
-
-                _MainTask = mainTask;
-                _RequestCancellation = cancellationTokenSource.Cancel;
-                _StopSignal?.Dispose();
-                _StopSignal = new SemaphoreSlim(0, 1);
-                _ActiveTasks?.Dispose();
-                _ActiveTasks = new SemaphoreSlim(_MaxSimultaneousTasks, _MaxSimultaneousTasks);
-                _Running = true;
-
-                _CancellationToken = cancellationTokenSource.Token;
-
-                _PrevDuration = null;
-                _Epoch = _startedAt;
-
-                _TaskWorkHandles = new ConcurrentBag<_TaskWorkHandle>();
-                foreach (var _scheduleHandle in _Schedules.Values)
+                foreach (var _taskHandle in _scheduleHandle._Tasks.Values)
                 {
-                    foreach (var _taskHandle in _scheduleHandle._Tasks.Values)
-                    {
-                        var _taskWorkHandle = new _TaskWorkHandle(this, _taskHandle);
-                        _TaskWorkHandles.Add(_taskWorkHandle);
-                        _scheduleHandle._TaskWorkHandles.TryAdd(_taskHandle.Key, _taskWorkHandle);
-                    }
+                    var _taskWorkHandle = new _TaskWorkHandle(this, _taskHandle);
+                    _TaskWorkHandles.Add(_taskWorkHandle);
+                    _scheduleHandle._TaskWorkHandles.TryAdd(_taskHandle.Key, _taskWorkHandle);
                 }
             }
         }
